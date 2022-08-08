@@ -26,7 +26,6 @@ public class UserSrv{
     	Optional<UserMdl> potentialUser = userRpo.findByEmail(newUser.getEmail());
     	
     	// Reject if email exists in db
-    	// expand below: check if userName exists in db
     	if(potentialUser.isPresent()) {
     		result.rejectValue("email", "Matches", "An account with that email already exists.");
     	}
@@ -99,10 +98,18 @@ public class UserSrv{
     	
     }
     
-    // JRF: I think below can be removed... tbd. 
+    // JRF: I think below can be removed... tbd. actually (8/4), I think I created this to return a list of users, that's it/all. 
  // returns all user
  	public List<UserMdl> returnAll(){
  		return userRpo.findAll();
+ 	}
+ 	
+ 	// Update a user
+ 	public UserMdl update(UserMdl x) {
+ 		
+ 		// placeholder for checking: email already in use?  username already in use? 
+ 		
+ 		return userRpo.save(x);
  	}
     
 
