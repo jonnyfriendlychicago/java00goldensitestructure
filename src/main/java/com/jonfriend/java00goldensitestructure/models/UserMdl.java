@@ -35,8 +35,8 @@ public class UserMdl {
     private String password;
     
     @Transient
-    @NotEmpty(message="Confirm Password is required!")
-    @Size(min=3, max=128, message="Confirm Password must match password")
+//    @NotEmpty(message="Confirm Password is required!")
+//    @Size(min=3, max=128, message="Confirm Password must match password")
     private String confirm;
     
     private String firstName;

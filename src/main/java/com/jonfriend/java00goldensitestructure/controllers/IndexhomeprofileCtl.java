@@ -47,7 +47,7 @@ public class IndexhomeprofileCtl {
         System.out.println("Page Display: login"); 
 		return "index.jsp"; 
 	}
-
+ 
     @PostMapping("/login")
     public String login(
     		@Valid @ModelAttribute("newLogin") LoginUserMdl newLogin
@@ -61,13 +61,14 @@ public class IndexhomeprofileCtl {
         if(result.hasErrors() || user==null ) // user==null is the equiv of "user name not found!"
         {
         	model.addAttribute("newUser", new UserMdl()); //deliver the empty UserMdl object before re-rendering the reg/login page; the LoginUserMdl obj will maintain the incoming values to this method
+        	model.addAttribute("validationErrorMsg", "Login errors.  See details in form below and try again.");
             return "index.jsp";
         }
     
         session.setAttribute("userId", user.getId()); // No errors?  Store the ID from the DB in session.
 	    return "redirect:/home";
     }
-    
+     
 	@GetMapping("/register")
 	public String register(
 			Model model
@@ -95,6 +96,7 @@ public class IndexhomeprofileCtl {
         if(result.hasErrors()) {
             // deliver the empty LoginUser object before re-rendering the reg/login page; the UserMdl obj will maintain the incoming values to this method
 //            model.addAttribute("newLogin", new LoginUserMdl()); // this delivery of empty loginUser object is no longer needed, since login/reg on sep pages
+        	model.addAttribute("validationErrorMsg", "Registration errors.  See details in form below and try again.");
             return "register.jsp";
         }
         
@@ -182,6 +184,44 @@ public class IndexhomeprofileCtl {
 			return "profile/edit.jsp";
 		}
 		
+//		// process the edit
+//		@PostMapping("/profile/edit")
+//		public String PostTheEditProfile(
+//				@Valid 
+//				@ModelAttribute("userProfileTobe") UserupdateMdl userupdateMdl
+//				, BindingResult result
+//				, Model model
+//				, HttpSession session
+//				, RedirectAttributes redirectAttributes
+//				) {
+//			
+//			// log out the unauth / deliver the auth use data
+//			if(session.getAttribute("userId") == null) {return "redirect:/logout";}
+//			Long authenticatedUserId = (Long) session.getAttribute("userId");
+//			System.out.println("authenticatedUserId: " + authenticatedUserId); 
+////			model.addAttribute("authUser", userSrv.findById(authenticatedUserId));
+//			
+//			UserMdl currentUserMdl = userSrv.findById(authenticatedUserId); //  gets the userModel object by calling the user service with the session user id
+//			
+//			if (result.hasErrors() ) { 
+//				System.out.println("on profile/edit error path"); 
+//				return "profile/edit.jsp";
+//			} else {
+//
+//				currentUserMdl.setEmail(userupdateMdl.getEmail()); 
+//				currentUserMdl.setUserName(userupdateMdl.getUserName()); 
+//				currentUserMdl.setFirstName(userupdateMdl.getFirstName() ); 
+//				currentUserMdl.setLastName(userupdateMdl.getLastName() ); 
+////				currentUserMdl.setConfirm("hello");  // this line not needed when validation taken off the confirm password field on the userMdl. 
+//				
+//				userSrv.update(currentUserMdl);
+//				
+//				return "redirect:/profile/" + currentUserMdl.getId(); 
+//			}
+//		}
+		
+//		BELOW = NEW VERSION OF USER UPDATE 
+		
 		// process the edit
 		@PostMapping("/profile/edit")
 		public String PostTheEditProfile(
@@ -199,52 +239,24 @@ public class IndexhomeprofileCtl {
 			System.out.println("authenticatedUserId: " + authenticatedUserId); 
 //			model.addAttribute("authUser", userSrv.findById(authenticatedUserId));
 			
-			// below now setting up the object by using the getID on the modAtt thing. 
-//			UserMdl userProfileObj = userSrv.findById(userMdl.getId());
-			
 			UserMdl currentUserMdl = userSrv.findById(authenticatedUserId); //  gets the userModel object by calling the user service with the session user id
-			 
+			currentUserMdl.setEmail(userupdateMdl.getEmail()); 
+			currentUserMdl.setUserName(userupdateMdl.getUserName()); 
+			currentUserMdl.setFirstName(userupdateMdl.getFirstName() ); 
+			currentUserMdl.setLastName(userupdateMdl.getLastName() ); 
+//				currentUserMdl.setConfirm("hello");  // this line not needed when validation taken off the confirm password field on the userMdl. 
 			
-			
-//			JRF: next two lines old bad useless stuff
-//			userMdl.setPassword(userProfileObj.getPassword()); 
-//			userMdl.setConfirm(userProfileObj.getPassword()); // jrf adding this, on a whim... no idea if affecting
-			
-			
-//			System.out.println("userProfileObj.getPassword(): " + userProfileObj.getPassword()); 
+			userSrv.updateUserProfile(currentUserMdl, result);
 			
 			if (result.hasErrors() ) { 
-				
 				System.out.println("on profile/edit error path"); 
-				
-//				Long authenticatedUserId = (Long) session.getAttribute("userId");
-//	            model.addAttribute("user", userSrv.findById(authenticatedUserId));            
-////	            System.out.println("userMdl.setPassword(userProfileObj.getPassword()); :: " + userMdl.setPassword(userProfileObj.getPassword()));
-//	            System.out.println("result.getErrorCount: " + result.getErrorCount() ); 
-//	            System.out.println("result.getAllErrors: " + result.getAllErrors() ); 
-	            
 				return "profile/edit.jsp";
 			} else {
-			
-//				userMdl.setUserMdl(intVar.getUserMdl());
-				// translation of line above: we are reSETTING on the house model object/record the createbyid to that which is GETTING the creatingbyid from the DB... NO LONGER from that silly hidden input. 
-				
-//				.setUserMdl(userProfileObj.getUserMdl());
-				
-				currentUserMdl.setEmail(userupdateMdl.getEmail()); 
-				currentUserMdl.setUserName(userupdateMdl.getUserName()); 
-				currentUserMdl.setFirstName(userupdateMdl.getFirstName() ); 
-				currentUserMdl.setLastName(userupdateMdl.getLastName() ); 
-				currentUserMdl.setConfirm("hello");  
-				
-				System.out.println("currentUserMdl.getPassword(): " + currentUserMdl.getPassword() ); 
-				
-				userSrv.update(currentUserMdl);
-				
-//				return "redirect:/"; 
 				return "redirect:/profile/" + currentUserMdl.getId(); 
 			}
 		}
+		
+		
 		
 // end of ctl methods
 }

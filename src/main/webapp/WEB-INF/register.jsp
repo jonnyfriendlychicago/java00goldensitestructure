@@ -7,12 +7,20 @@
 <body>
 	<jsp:include page="include/header.jsp" />
 	
-	<div id=pageHeader class="container-fluid bg-primary">
+	<div id=pageHeader class="container-fluid p-2 bg-primary text-white text-center">
 		<h2>Registration and Login</h2>
 	</div>
 	
 	<div id=main class="container-fluid">
-		<div id=registerContainer class="container">
+		<div class="row mt-3">
+			<div class="col">
+			</div> <!-- end col -->
+			<div class="col-sm-7">
+				<c:if test="${validationErrorMsg != null}">
+			        <div class="alert alert-danger" role="alert">
+			        	${validationErrorMsg}
+			        </div>
+			    </c:if>
 				<div id="registerCard" class="card p-3 d-md-flex justify-content-center align-items-center" >
 					<h4>Register</h4>
 					<form:form action='/register' method='post' modelAttribute='newUser'>
@@ -60,9 +68,12 @@
 						<p>Already have account?<a href="/" class="link-primary">Login</a> 
 					</form:form>
 				</div> <!-- end registerCard -->
-		</div> <!-- end registerContainer -->
-	</div>
-	
+			</div> <!-- end col -->
+			<div class="col">
+			</div> <!-- end col -->
+		</div> <!-- end row -->
+	</div><!-- end main -->
+ 
 	<jsp:include page="include/footer.jsp"/>
 			
 			

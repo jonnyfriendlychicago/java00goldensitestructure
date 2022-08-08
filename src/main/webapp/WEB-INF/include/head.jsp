@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>java01goldensitecontent</title>
+		<title>java00goldensitestructure</title>
 		<meta charset="UTF-8">
 		<!-- google fonts try -->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">

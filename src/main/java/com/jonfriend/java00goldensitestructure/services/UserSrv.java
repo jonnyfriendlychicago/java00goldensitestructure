@@ -32,7 +32,7 @@ public class UserSrv{
     	
     	// reject if pw/confirm don't match
     	if(!newUser.getPassword().equals(newUser.getConfirm())) {
-    		result.rejectValue("confirm", "Matches", "The Confirm Password must match Password!");
+    		result.rejectValue("confirm", "Matches", "Password and Confirm Pasword must be the same.");
     	}
     	
         // Return null if result has errors
@@ -97,9 +97,8 @@ public class UserSrv{
        	return potentialUser.get();
     	
     }
-    
-    // JRF: I think below can be removed... tbd. actually (8/4), I think I created this to return a list of users, that's it/all. 
- // returns all user
+     
+ // returns all user (for to display list of users)
  	public List<UserMdl> returnAll(){
  		return userRpo.findAll();
  	}
@@ -112,7 +111,48 @@ public class UserSrv{
  		return userRpo.save(x);
  	}
     
+ 	// above works for updating user.  
+//	BELOW = NEW VERSION OF USER UPDATE 
+ 	
+    public UserMdl updateUserProfile(
+    		UserMdl sketchedUpdatedUserMdl
+    		, BindingResult result
+    		) {
+        
+    	// try to find a user record with the proposed email addy
+    	Optional<UserMdl> userRecordWithMatchingEmailAddy = userRpo.findByEmail(sketchedUpdatedUserMdl.getEmail());
+    	
+    	// Reject if record found in db with that email and the userID of such record is NOT the user we mging here.
+    	if(
+    			userRecordWithMatchingEmailAddy.isPresent() 
+    			&&
+    			userRecordWithMatchingEmailAddy.get().getId() != sketchedUpdatedUserMdl.getId() 
+    			
+    	) {
+    		result.rejectValue("email", "Matches", "Another account with that email already exists.");
+    	}
+    	
+//    	// reject if pw/confirm don't match
+//    	if(!newUser.getPassword().equals(newUser.getConfirm())) {
+//    		result.rejectValue("confirm", "Matches", "Password and Confirm Pasword must be the same.");
+//    	}
+//    	
+        // Return null if result has errors
+        if(result.hasErrors()) {
+            // Exit the method and go back to the controller to handle the response
+            return null;
+        }
+        
+//     // Hash and set password, save user to database
+//        String hashed = BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt());
+//        newUser.setPassword(hashed);
+    	return userRpo.save(sketchedUpdatedUserMdl);
+    }
 
+	
+
+ 	
+ 	
  	
  	
 }
