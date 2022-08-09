@@ -70,6 +70,7 @@
 			<li class="nav-item"><a class="nav-link" href="#">Users</a></li>
 		</ul>
         <div class="dropdown text-end">
+<!--         <div class="dropdown-menu text-end dropdown-menu-right"> -->
 				<a href="#"
 					class="d-block link-dark text-decoration-none dropdown-toggle text-white"
 					data-bs-toggle="dropdown" aria-expanded="false"
